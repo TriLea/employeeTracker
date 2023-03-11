@@ -12,19 +12,19 @@ app.use(express.json());
 // Connect to database
 const db = mysql.createConnection(
   {
-    host: 'localhost',
+    host: 'localhost', //3001?
     // MySQL username,
     user: 'root',
     // TODO: Add MySQL password here
-    password: '',
-    database: 'movies_db'
+    password: 'Aperture_1', 
+    database: '' //fix
   },
-  console.log(`Connected to the movies_db database.`)
+  console.log(`Connected to the movies_db database.`) // fix
 );
 
 // Create a movie
-app.post('/api/new-movie', ({ body }, res) => {
-  const sql = `INSERT INTO movies (movie_name)
+app.post('/api/new-movie', ({ body }, res) => { // change name of all routes, //change all code blocks to match to schema
+  const sql = `INSERT INTO movies (movie_name) 
     VALUES (?)`;
   const params = [body.movie_name];
   

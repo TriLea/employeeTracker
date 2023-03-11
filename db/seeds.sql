@@ -14,3 +14,11 @@ VALUES (1, "Zazu is underrated. Give that hornbill a sequel!"),
        (1, "Hakuna matata"),
        (5, "Those flying monkeys are nightmare fuel!");
        
+INSERT INTO employees_db (department, role, employee)
+VALUES  
+    (""),
+    (""),
+    (""),
+
+//how are they seperated?
+//how do i populate the tables?
