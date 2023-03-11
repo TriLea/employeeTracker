@@ -1,6 +1,8 @@
 const express = require('express');
+const { default: inquirer } = require('inquirer');
 // Import and require mysql2
 const mysql = require('mysql2');
+inquirer = require('inquirer');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -16,7 +18,7 @@ const db = mysql.createConnection(
     // MySQL username,
     user: 'root',
     // TODO: Add MySQL password here
-    password: 'Aperture_1', 
+    password: 'Aperture1', 
     database: '' //fix
   },
   console.log(`Connected to the movies_db database.`) // fix
@@ -123,3 +125,35 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+// starting the inquirer stuff here almost as a second file,
+//using the above lines as a guide
+
+const teamArray = []; // to store team, gets passed to buildteam() which renders html
+
+function () //name //function to start the app?
+{
+    inquirer.prompt(
+    
+        [
+            {
+                type: 'input',
+                message: 'What is your name?',
+                name: 'name'
+            },
+            {
+                type: 'input',
+                message: 'What is your ID?',
+                name: 'ID'
+            },
+        ]
+    )
+    .then((answers) => {
+        const managerObj = new Manager(answers.name, answers.ID)
+
+        employeeMenu(); //employee meny would display choices
+        //and direct to the appropriate function
+    })
+}
+
+//call start
