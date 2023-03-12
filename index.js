@@ -11,9 +11,9 @@ const db = mysql.createConnection(
       user: 'root',
       // TODO: Add MySQL password here
       password: 'Aperture1', 
-      database: '' //fix
+      database: 'employees_db'
     },
-    console.log(`Connected to the movies_db database.`) // fix
+    console.log(`Connected to the employees_db database.`)
 );
 
 function menu()
@@ -36,9 +36,9 @@ function menu()
         ]
         
     )
-    .then((choice)=> {
+    .then((answer)=> { 
 
-        switch(choice.choices) {
+        switch(answer.choice) {
             case "Add employee":
                 addEmployee();
             break;
@@ -63,7 +63,7 @@ function menu()
                 addDepartment();
             break;
 
-            case "quit":
+            case "Quit":
                 quit();
             break;
 
@@ -94,14 +94,50 @@ function addEmployee()
             },
             {
                 type: 'input',
-                message: 'Who is the employee\'s manager?',
+                message: 'Who is the employee\'s manager?', //ask for last name also
                 name: 'manager'
             }
         ]
     )
     .then((answers) => {
-        
-        menu(); //employee meny would display choices and direct to the appropriate function to do next
+        console.log("add employee hit");
+
+        const sqlRole = `SELECT id FROM role WHERE title = ${answers.role};`
+
+        db.query(sqlRole, [], (err, result) => {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            console.table(result); //has id and id num
+            var roleID = result[0].id;
+
+            const sqlManger = `SELECT id FROM employee WHERE first_name = 
+            ${answers.managerFirstName} and 
+            last_name = ${answers.managerLastName};`
+            //combine first and last name
+
+            db.query(sqlManger, [], (err, result) => {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                var managerID = result[0].id;
+
+                const sql = `INSERT INTO employee (${answers.firstName}, ${answers.lastName}, ${roleID}, ${managerID})`;
+
+                db.query(sql, [], (err, result) => {
+                    if (err) {
+                        console.log(err);
+                        return;
+                    }
+                    console.table(result);
+                    console.log("employee added");
+                });
+            });
+        });
+
+        menu(); //employee menu would display choices and direct to the appropriate function to do next
     })
 }
 
@@ -132,8 +168,9 @@ function updateEmployee()
         ]
     )
     .then((answers) => {
+        console.log("update employee hit");
         
-        menu(); //employee meny would display choices and direct to the appropriate function to do next
+        menu(); //employee menu would display choices and direct to the appropriate function to do next
     })
 }
 
@@ -145,8 +182,22 @@ function viewAllRoles()
         ]
     )
     .then((answers) => {
+        console.log("view all roles hit");
+
+        const sql = `SELECT role.id AS id, title, salary,  department.name AS department
+        FROM role 
+        JOIN department ON role.department_id = department.id
+        ORDER BY role.id;`
+
+        db.query(sql, [], (err, result) => {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            console.table(result);
+        });
         
-        menu(); //employee meny would display choices and direct to the appropriate function to do next
+        menu(); //employee menu would display choices and direct to the appropriate function to do next
     })
 }
 
@@ -177,8 +228,9 @@ function addRole()
         ]
     )
     .then((answers) => {
+        console.log("add role hit");
         
-        menu(); //employee meny would display choices and direct to the appropriate function to do next
+        menu(); //employee menu would display choices and direct to the appropriate function to do next
     })
 }
 
@@ -190,8 +242,9 @@ function viewAllDepartments()
         ]
     )
     .then((answers) => {
+        console.log("view all departments hit");
         
-        menu(); //employee meny would display choices and direct to the appropriate function to do next
+        menu(); //employee menu would display choices and direct to the appropriate function to do next
     })
 }
 
@@ -217,8 +270,9 @@ function addDepartment()
         ]
     )
     .then((answers) => {
+        console.log("add department hit");
         
-        menu(); //employee meny would display choices and direct to the appropriate function to do next
+        menu(); //employee menu would display choices and direct to the appropriate function to do next
     })
 }
 
@@ -226,5 +280,12 @@ function quit()
 {
     console.log("Goodbye");
     //maybe save something here first?
+    //return false;
     process.exit();
 }
+
+menu();
+
+// while (menu())
+// {
+// }
