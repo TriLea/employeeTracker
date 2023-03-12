@@ -29,7 +29,9 @@ function menu()
                  'View all roles', 
                  'Add role', 
                 'View all departments', 
-                'Add department']
+                'Add department',
+                'Quit'
+            ]
             }
         ]
         
@@ -37,28 +39,32 @@ function menu()
     .then((choice)=> {
 
         switch(choice.choices) {
-            case "":
+            case "Add employee":
                 addEmployee();
             break;
 
-            case "":
+            case "Update employee":
                 updateEmployee();
             break;
 
-            case "":
+            case "View all roles":
                 viewAllRoles();
             break;
 
-            case "":
+            case "Add role":
                 addRole();
             break;
 
-            case "":
+            case "View all departments":
                 viewAllDepartments();
             break;
 
-            case "":
+            case "Add department":
                 addDepartment();
+            break;
+
+            case "quit":
+                quit();
             break;
 
             default:
@@ -94,13 +100,8 @@ function addEmployee()
         ]
     )
     .then((answers) => {
-        //save the data?
-        // const sql = `INSERT INTO movies (movie_name) 
-        // VALUES (?)`;
-        // const params = [body.movie_name];
-
-        menu(); //employee meny would display choices
-        //and direct to the appropriate function
+        
+        menu(); //employee meny would display choices and direct to the appropriate function to do next
     })
 }
 
@@ -131,13 +132,8 @@ function updateEmployee()
         ]
     )
     .then((answers) => {
-        //save the data?
-        // const sql = `INSERT INTO movies (movie_name) 
-        // VALUES (?)`;
-        // const params = [body.movie_name];
-
-        menu(); //employee meny would display choices
-        //and direct to the appropriate function
+        
+        menu(); //employee meny would display choices and direct to the appropriate function to do next
     })
 }
 
@@ -145,36 +141,12 @@ function viewAllRoles()
 {
     inquirer.prompt(
         [
-            {
-                type: 'input',
-                message: 'What is the employee\'s first name?',
-                name: 'firstName'
-            },
-            {
-                type: 'input',
-                message: 'What is the employee\'s last name?',
-                name: 'lastName'
-            },
-            {
-                type: 'input',
-                message: 'What is the employee\'s role?',
-                name: 'role'
-            },
-            {
-                type: 'input',
-                message: 'Who is the employee\'s manager?',
-                name: 'manager'
-            }
+            //console.table
         ]
     )
     .then((answers) => {
-        //save the data?
-        // const sql = `INSERT INTO movies (movie_name) 
-        // VALUES (?)`;
-        // const params = [body.movie_name];
-
-        menu(); //employee meny would display choices
-        //and direct to the appropriate function
+        
+        menu(); //employee meny would display choices and direct to the appropriate function to do next
     })
 }
 
@@ -184,34 +156,29 @@ function addRole()
         [
             {
                 type: 'input',
-                message: 'What is the employee\'s first name?',
-                name: 'firstName'
+                message: 'What is the employee\'s id',
+                name: 'id'
             },
             {
                 type: 'input',
-                message: 'What is the employee\'s last name?',
-                name: 'lastName'
+                message: 'What is the employee\'s title?',
+                name: 'title'
             },
             {
                 type: 'input',
-                message: 'What is the employee\'s role?',
-                name: 'role'
+                message: 'What is the employee\'s salary?',
+                name: 'salary'
             },
             {
                 type: 'input',
-                message: 'Who is the employee\'s manager?',
-                name: 'manager'
+                message: 'Who is the employee\'s department?',
+                name: 'department'
             }
         ]
     )
     .then((answers) => {
-        //save the data?
-        // const sql = `INSERT INTO movies (movie_name) 
-        // VALUES (?)`;
-        // const params = [body.movie_name];
-
-        menu(); //employee meny would display choices
-        //and direct to the appropriate function
+        
+        menu(); //employee meny would display choices and direct to the appropriate function to do next
     })
 }
 
@@ -219,36 +186,12 @@ function viewAllDepartments()
 {
     inquirer.prompt(
         [
-            {
-                type: 'input',
-                message: 'What is the employee\'s first name?',
-                name: 'firstName'
-            },
-            {
-                type: 'input',
-                message: 'What is the employee\'s last name?',
-                name: 'lastName'
-            },
-            {
-                type: 'input',
-                message: 'What is the employee\'s role?',
-                name: 'role'
-            },
-            {
-                type: 'input',
-                message: 'Who is the employee\'s manager?',
-                name: 'manager'
-            }
+            //console.table
         ]
     )
     .then((answers) => {
-        //save the data?
-        // const sql = `INSERT INTO movies (movie_name) 
-        // VALUES (?)`;
-        // const params = [body.movie_name];
-
-        menu(); //employee meny would display choices
-        //and direct to the appropriate function
+        
+        menu(); //employee meny would display choices and direct to the appropriate function to do next
     })
 }
 
@@ -258,6 +201,11 @@ function addDepartment()
         [
             {
                 type: 'input',
+                message: 'What is the employee\'s id?',
+                name: 'id'
+            },
+            {
+                type: 'input',
                 message: 'What is the employee\'s first name?',
                 name: 'firstName'
             },
@@ -266,25 +214,17 @@ function addDepartment()
                 message: 'What is the employee\'s last name?',
                 name: 'lastName'
             },
-            {
-                type: 'input',
-                message: 'What is the employee\'s role?',
-                name: 'role'
-            },
-            {
-                type: 'input',
-                message: 'Who is the employee\'s manager?',
-                name: 'manager'
-            }
         ]
     )
     .then((answers) => {
-        //save the data?
-        // const sql = `INSERT INTO movies (movie_name) 
-        // VALUES (?)`;
-        // const params = [body.movie_name];
-
-        menu(); //employee meny would display choices
-        //and direct to the appropriate function
+        
+        menu(); //employee meny would display choices and direct to the appropriate function to do next
     })
+}
+
+function quit()
+{
+    console.log("Goodbye");
+    //maybe save something here first?
+    process.exit();
 }
