@@ -142,9 +142,8 @@ function addEmployee()
                     }
                     //console.table(result);
                     console.log("employee added");
+                    menu(); //employee menu would display choices and direct to the appropriate function to do next
                 });
-
-                menu(); //employee menu would display choices and direct to the appropriate function to do next
             });
         });
     });
@@ -152,62 +151,98 @@ function addEmployee()
 
 function updateEmployee()
 {
-    inquirer.prompt(
-        [
-            {
-                type: 'input',
-                message: 'What is the employee\'s first name?',
-                name: 'firstName'
-            },
-            {
-                type: 'input',
-                message: 'What is the employee\'s last name?',
-                name: 'lastName'
-            },
-            {
-                type: 'input',
-                message: 'What is the employee\'s role?',
-                name: 'role'
-            },
-            {
-                type: 'input',
-                message: 'Who is the employee\'s manager?',
-                name: 'manager'
-            }
-        ]
-    )
-    .then((answers) => {
-        console.log("update employee hit");
+    const sqlRole = `SELECT id, title FROM role;`;
+
+    db.query(sqlRole, [], (err, result) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+
+        var roleList = [];
+        for (var i = 0; i < result.length; i++)
+        {
+            roleList.push({name: result[i].title, value: result[i].id});
+        }
         
-        menu(); //employee menu would display choices and direct to the appropriate function to do next
-    })
-}
+        const sqlEmployee = `SELECT id, first_name, last_name FROM employee;`;
 
-function viewAllRoles()
-{
-    inquirer.prompt(
-        [
-            //console.table
-        ]
-    )
-    .then((answers) => {
-        console.log("view all roles hit");
-
-        const sql = `SELECT role.id AS id, title, salary,  department.name AS department
-        FROM role 
-        JOIN department ON role.department_id = department.id
-        ORDER BY role.id;`
-
-        db.query(sql, [], (err, result) => {
+        db.query(sqlEmployee, [], (err, result) => {
             if (err) {
                 console.log(err);
                 return;
             }
-            console.table(result);
-        });
+
+            var employeeList = [];
+            for (var i = 0; i < result.length; i++)
+            {
+                employeeList.push({name: result[i].first_name + " " + result[i].last_name, value: result[i].id});
+            }
         
+            inquirer.prompt(
+                [
+                    {
+                        type: 'list',
+                        message: 'Select employee to update?',
+                        name: 'employeeID',
+                        choices: employeeList
+                    },
+                    {
+                        type: 'input',
+                        message: 'What is the employee\'s first name?',
+                        name: 'firstName'
+                    },
+                    {
+                        type: 'input',
+                        message: 'What is the employee\'s last name?',
+                        name: 'lastName'
+                    },
+                    {
+                        type: 'list',
+                        message: 'Select employee to update?',
+                        name: 'roleID',
+                        choices: roleList
+                    },
+                    {
+                        type: 'list',
+                        message: 'Who is the employee\'s manager?',
+                        name: 'managerID',
+                        choices: employeeList
+                    }
+                ]
+            )
+            .then((answers) => {
+                console.log("update employee hit");
+
+                const sql = `UPDATE employee 
+                SET first_name = "${answers.firstName}", last_name = "${answers.lastName}", 
+                role_id = ${answers.roleID}, manager_id = ${answers.managerID} WHERE id = ${answers.employeeID};`;
+
+                db.query(sql, [], (err, result) => {
+                    if (err) {
+                        console.log(err);
+                        return;
+                    }
+                    //console.table(result);
+                    console.log("employee updated");
+                    menu(); //employee menu would display choices and direct to the appropriate function to do next
+                });
+            });
+        });
+    });
+}
+
+function viewAllRoles()
+{
+    const sql = `SELECT * FROM role;`;
+    db.query(sql, [], (err, result) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        console.table(result);
         menu(); //employee menu would display choices and direct to the appropriate function to do next
-    })
+    });
 }
 
 function addRole()
