@@ -117,13 +117,13 @@ function addEmployee()
                     {
                         type: 'list',
                         message: 'What is the employee\'s role?',
-                        name: 'role',
+                        name: 'roleID',
                         choices: roleList
                     },
                     {
                         type: 'list',
                         message: 'Who is the employee\'s manager?', //ask for last name also
-                        name: 'manager',
+                        name: 'managerID',
                         choices: managerList
                     }
                 ]
@@ -132,19 +132,17 @@ function addEmployee()
                 console.log("add employee hit");
                 console.log(answers);
 
-                //         const sql = `INSERT INTO employee (${answers.firstName}, ${answers.lastName}, ${roleID}, ${managerID})`;
+                const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES
+                    ("${answers.firstName}", "${answers.lastName}", ${answers.roleID}, ${answers.managerID});`;
 
-                //         db.query(sql, [], (err, result) => {
-                //             if (err) {
-                //                 console.log(err);
-                //                 return;
-                //             }
-                //             console.table(result);
-                //             console.log("employee added");
-                //         });
-                
-                //     });
-                // });
+                db.query(sql, [], (err, result) => {
+                    if (err) {
+                        console.log(err);
+                        return;
+                    }
+                    //console.table(result);
+                    console.log("employee added");
+                });
 
                 menu(); //employee menu would display choices and direct to the appropriate function to do next
             });
