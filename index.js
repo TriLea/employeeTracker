@@ -25,16 +25,15 @@ function menu()
                 message: 'What would you like to do?',
                 name: 'choice',
                 choices: ['Add employee', 
-                'Update employee',
-                 'View all roles', 
-                 'Add role', 
-                'View all departments', 
-                'Add department',
-                'Quit'
-            ]
+                    'Update employee', 
+                    'View all roles', 
+                    'Add role', 
+                    'View all departments', 
+                    'Add department', 
+                    'Quit' 
+                ]
             }
-        ]
-        
+        ] 
     )
     .then((answer)=> { 
 
@@ -75,70 +74,82 @@ function menu()
 
 function addEmployee()
 {
-    inquirer.prompt(
-        [
-            {
-                type: 'input',
-                message: 'What is the employee\'s first name?',
-                name: 'firstName'
-            },
-            {
-                type: 'input',
-                message: 'What is the employee\'s last name?',
-                name: 'lastName'
-            },
-            {
-                type: 'input',
-                message: 'What is the employee\'s role?',
-                name: 'role'
-            },
-            {
-                type: 'input',
-                message: 'Who is the employee\'s manager?', //ask for last name also
-                name: 'manager'
-            }
-        ]
-    )
-    .then((answers) => {
-        console.log("add employee hit");
+    const sqlRole = `SELECT id, title FROM role;`;
 
-        const sqlRole = `SELECT id FROM role WHERE title = ${answers.role};`
+    db.query(sqlRole, [], (err, result) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
 
-        db.query(sqlRole, [], (err, result) => {
+        var roleList = [];
+        for (var i = 0; i < result.length; i++)
+        {
+            roleList.push({name: result[i].title, value: result[i].id});
+        }
+        
+        const sqlManager = `SELECT id, first_name, last_name FROM employee;`;
+
+        db.query(sqlManager, [], (err, result) => {
             if (err) {
                 console.log(err);
                 return;
             }
-            console.table(result); //has id and id num
-            var roleID = result[0].id;
 
-            const sqlManger = `SELECT id FROM employee WHERE first_name = 
-            ${answers.managerFirstName} and 
-            last_name = ${answers.managerLastName};`
-            //combine first and last name
+            var managerList = [];
+            for (var i = 0; i < result.length; i++)
+            {
+                managerList.push({name: result[i].first_name + " " + result[i].last_name, value: result[i].id});
+            }
 
-            db.query(sqlManger, [], (err, result) => {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-                var managerID = result[0].id;
-
-                const sql = `INSERT INTO employee (${answers.firstName}, ${answers.lastName}, ${roleID}, ${managerID})`;
-
-                db.query(sql, [], (err, result) => {
-                    if (err) {
-                        console.log(err);
-                        return;
+            inquirer.prompt(
+                [
+                    {
+                        type: 'input',
+                        message: 'What is the employee\'s first name?',
+                        name: 'firstName'
+                    },
+                    {
+                        type: 'input',
+                        message: 'What is the employee\'s last name?',
+                        name: 'lastName'
+                    },
+                    {
+                        type: 'list',
+                        message: 'What is the employee\'s role?',
+                        name: 'role',
+                        choices: roleList
+                    },
+                    {
+                        type: 'list',
+                        message: 'Who is the employee\'s manager?', //ask for last name also
+                        name: 'manager',
+                        choices: managerList
                     }
-                    console.table(result);
-                    console.log("employee added");
-                });
+                ]
+            )
+            .then((answers) => {
+                console.log("add employee hit");
+                console.log(answers);
+
+                //         const sql = `INSERT INTO employee (${answers.firstName}, ${answers.lastName}, ${roleID}, ${managerID})`;
+
+                //         db.query(sql, [], (err, result) => {
+                //             if (err) {
+                //                 console.log(err);
+                //                 return;
+                //             }
+                //             console.table(result);
+                //             console.log("employee added");
+                //         });
+                
+                //     });
+                // });
+
+                menu(); //employee menu would display choices and direct to the appropriate function to do next
             });
         });
-
-        menu(); //employee menu would display choices and direct to the appropriate function to do next
-    })
+    });
 }
 
 function updateEmployee()
